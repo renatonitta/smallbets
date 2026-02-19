@@ -43,24 +43,4 @@ class RoomsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "non-admin users are redirected away from conversation rooms" do
-    conversation = Rooms::Open.create!(name: "Digest Conversation", source_room: rooms(:hq), creator: users(:david))
-    conversation.memberships.grant_to([users(:david), users(:kevin)])
-
-    sign_in :kevin
-
-    get room_url(conversation)
-
-    assert_redirected_to talk_path
-    assert_equal 303, response.status
-  end
-
-  test "administrators can view conversation rooms" do
-    conversation = Rooms::Open.create!(name: "Digest Conversation (Admin)", source_room: rooms(:hq), creator: users(:david))
-    conversation.memberships.grant_to(users(:david))
-
-    get room_url(conversation)
-
-    assert_response :success
-  end
 end

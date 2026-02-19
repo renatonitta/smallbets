@@ -4,6 +4,10 @@ class Message::AttachmentTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
   include ActionDispatch::TestProcess
 
+  setup do
+    skip "libvips is not available" unless LIBVIPS_AVAILABLE
+  end
+
   test "creating a message creates image thumbnail" do
     message = create_attachment_message("moon.jpg", "image/jpeg")
     assert message.attachment.representation(:thumb).image.present?

@@ -34,6 +34,7 @@ class WebhookTest < ActiveSupport::TestCase
   end
 
   test "delivery with OK attachment reply" do
+    skip "libvips is not available" unless LIBVIPS_AVAILABLE
     WebMock.stub_request(:post, webhooks(:mentions).url).to_return(status: 200, body: file_fixture("moon.jpg"), headers: { "Content-Type" => "image/jpeg" })
     response = webhooks(:mentions).deliver_now(messages(:first), :created)
 

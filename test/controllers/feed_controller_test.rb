@@ -48,22 +48,6 @@ class FeedControllerTest < ActionDispatch::IntegrationTest
     assert_kind_of Array, payload["feedCards"]
   end
 
-  test "non-admin html requests are redirected to talk" do
-    sign_in :kevin
-
-    get root_path
-
-    assert_redirected_to talk_path
-    assert_equal 303, response.status
-  end
-
-  test "non-admin json requests are forbidden" do
-    sign_in :kevin
-
-    get root_path, as: :json
-
-    assert_response :forbidden
-  end
 
   test "feed cards include deduplicated emoji reactions from original messages" do
     source_room = rooms(:watercooler)

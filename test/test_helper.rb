@@ -8,6 +8,14 @@ require "webmock/minitest"
 
 WebMock.enable!
 
+LIBVIPS_AVAILABLE = begin
+  require "vips"
+  Vips::Image.black(1, 1)
+  true
+rescue LoadError, RuntimeError, TypeError
+  false
+end
+
 class ActiveSupport::TestCase
   # FIXME: Why isn't this included in ActiveSupport::TestCase by default?
   include ActiveJob::TestHelper, Turbo::Broadcastable::TestHelper
