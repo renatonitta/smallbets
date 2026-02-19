@@ -8,6 +8,7 @@ module Vimeo
       @cache = ActiveSupport::Cache::MemoryStore.new
       @previous_cache = Rails.cache
       Rails.cache = @cache
+      Vimeo::ThumbnailFetcher.stubs(:access_token).returns("test_token")
     end
 
     teardown do

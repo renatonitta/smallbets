@@ -114,21 +114,19 @@ module Stats
             active: true
           )
 
-          # Last month: 5 messages (created in the past)
-          travel_to 1.month.ago do
-            5.times { @room.messages.create!(creator: user, body: "Last month", client_message_id: SecureRandom.uuid) }
+          # Old messages: 5 messages created well outside the current month
+          travel_to 3.months.ago do
+            5.times { @room.messages.create!(creator: user, body: "Old month", client_message_id: SecureRandom.uuid) }
           end
 
           # This month: 2 messages (created now)
-          travel_to Time.zone.local(2026, 1, 15, 12, 0, 0) do
-            2.times { @room.messages.create!(creator: user, body: "This month", client_message_id: SecureRandom.uuid) }
+          2.times { @room.messages.create!(creator: user, body: "This month", client_message_id: SecureRandom.uuid) }
 
-            result = UserRankQuery.call(user_id: user.id, period: :month)
+          result = UserRankQuery.call(user_id: user.id, period: :month)
 
-            # Should have rank based on this month's messages
-            assert_not_nil result, "User should have rank for this month"
-            assert_equal 2, result[:message_count], "Should only count this month's messages"
-          end
+          # Should have rank based on this month's messages
+          assert_not_nil result, "User should have rank for this month"
+          assert_equal 2, result[:message_count], "Should only count this month's messages"
         end
 
         test "year period filters messages correctly" do
