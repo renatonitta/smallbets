@@ -233,14 +233,4 @@ Rails.application.routes.draw do
 
   # Redirect main stats path to V2
   get "/stats", to: redirect("/stats/v2/dashboard"), as: "stats"
-
-  # Stats routes (V1 - legacy, temporary access)
-  get "/stats/legacy", to: "stats#index", as: "stats_legacy"
-  get "/stats/legacy/daily/month_data", to: "stats#month_data", as: "stats_legacy_month_data"
-  get "/stats/legacy/daily/:month", to: "stats#today", as: "stats_legacy_daily_month"
-  get "/stats/legacy/daily", to: "stats#today", as: "stats_legacy_daily"
-  get "/stats/legacy/monthly", to: "stats#month", as: "stats_legacy_monthly"
-  get "/stats/legacy/yearly", to: "stats#year", as: "stats_legacy_yearly"
-  get "/stats/legacy/all", to: "stats#all", as: "stats_legacy_all"
-  get "/stats/legacy/rooms", to: "stats#rooms", as: "stats_legacy_rooms"
 end
