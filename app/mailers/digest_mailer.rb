@@ -7,7 +7,7 @@ class DigestMailer < ApplicationMailer
     @grouped_rooms = grouped_rooms
     @digest_date = Date.current
 
-    mail(to: @user.email_address, subject: "Your weekly digest — #{@digest_date.strftime("%b %-d, %Y")}")
+    mail(to: @user.email_address, subject: "This week in Small Bets - #{@digest_date.strftime("%b %-d, %Y")}")
   end
 
   private
