@@ -2,13 +2,14 @@ Hi <%= @user.name %>,
 
 Here are the top topics from the past week:
 
-<% @rooms.each_with_index do |room, index| %>
+<% @grouped_rooms.each do |source, rooms| %>
+<%= strip_emoji_from_name(source.name) || source.name %>
+<% rooms.each do |room| %>
 <% feed_card = room.automated_feed_card %>
-<% source = room.source_room || room %>
-#<%= index + 1 %>: <%= feed_card&.title || room.name %>
+- <%= feed_card&.title || room.name %>
 <%= feed_card&.summary %>
-in <%= strip_emoji_from_name(source.name) || source.name %>
 <%= room_url(room) %>
+<% end %>
 
 <% end %>
 --

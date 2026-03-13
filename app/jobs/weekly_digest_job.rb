@@ -1,6 +1,6 @@
 class WeeklyDigestJob < ApplicationJob
   MIN_TOPICS = 3
-  MAX_TOPICS = 10
+  MAX_TOPICS = 50
 
   def perform(since: 1.week.ago)
     @since = since
@@ -16,8 +16,10 @@ class WeeklyDigestJob < ApplicationJob
       return
     end
 
+    grouped = group_by_source_room(rooms)
+
     record_digest_entries(rooms)
-    send_to_subscribers(rooms)
+    send_to_subscribers(grouped)
 
     log "Done. Sent digest with #{rooms.length} topics."
   end
@@ -42,9 +44,17 @@ class WeeklyDigestJob < ApplicationJob
     EmailDigestEntry.insert_all(entries)
   end
 
-  def send_to_subscribers(rooms)
+  def group_by_source_room(rooms)
+    top_room_ids = Stats::V2::Queries::RoomStatsQuery.new(limit: 100).call.map(&:id)
+    top_room_rank = top_room_ids.each_with_index.to_h
+
+    rooms.group_by { |room| room.source_room || room }
+         .sort_by { |source, _| top_room_rank[source.id] || Float::INFINITY }
+  end
+
+  def send_to_subscribers(grouped_rooms)
     User.active.non_suspended.subscribed("weekly_digest").find_each do |user|
-      DigestMailer.weekly(user, rooms).deliver_now
+      DigestMailer.weekly(user, grouped_rooms).deliver_now
       log "Sent digest.", user
     rescue => e
       log "Failed to send digest: #{e.message}", user

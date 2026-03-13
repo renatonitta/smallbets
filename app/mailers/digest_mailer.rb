@@ -2,9 +2,9 @@ class DigestMailer < ApplicationMailer
   helper RoomsHelper
   helper_method :room_icon
 
-  def weekly(user, rooms)
+  def weekly(user, grouped_rooms)
     @user = user
-    @rooms = rooms
+    @grouped_rooms = grouped_rooms
     @digest_date = Date.current
 
     mail(to: @user.email_address, subject: "Your weekly digest — #{@digest_date.strftime("%b %-d, %Y")}")
