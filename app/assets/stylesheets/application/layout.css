@@ -47,7 +47,7 @@ body.library-collapsed #sidebar {
 }
 
 body.library-collapsed #sidebar.open {
-  transform: translate(0);
+  transform: none;
 }
 
 /* When the Library sidebar overlay is open, block interactions with underlying content */
@@ -134,7 +134,7 @@ body.library-collapsed:has(#sidebar.open) #main-content {
 
   &.open {
     @media (max-width: 120ch) {
-      transform: translate(0);
+      transform: none;
     }
   }
 }
