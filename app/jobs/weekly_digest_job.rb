@@ -1,6 +1,6 @@
 class WeeklyDigestJob < ApplicationJob
   MIN_TOPICS = 3
-  MAX_TOPICS = 10
+  MAX_TOPICS = 50
 
   def perform(since: 1.week.ago)
     @since = since

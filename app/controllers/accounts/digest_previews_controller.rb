@@ -1,7 +1,7 @@
 class Accounts::DigestPreviewsController < ApplicationController
   before_action :ensure_can_administer
 
-  MAX_TOPICS = 10
+  MAX_TOPICS = 50
   MIN_TOPICS = 3
 
   def create
