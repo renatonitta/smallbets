@@ -14,7 +14,7 @@ class Accounts::DigestPreviewsController < ApplicationController
 
     cards = HomeFeed::Ranker.top(limit: MAX_TOPICS, since: 1.week.ago)
     room_ids = cards.map(&:room_id)
-    rooms = Room.where(id: room_ids).index_by(&:id)
+    rooms = Room.includes(:source_room, :automated_feed_card).where(id: room_ids).index_by(&:id)
                .then { |by_id| room_ids.filter_map { |id| by_id[id] } }
 
     if rooms.length < MIN_TOPICS
@@ -22,7 +22,13 @@ class Accounts::DigestPreviewsController < ApplicationController
       return
     end
 
-    DigestMailer.weekly(user, rooms).deliver_now
+    top_room_ids = Stats::V2::Queries::RoomStatsQuery.new(limit: 100).call.map(&:id)
+    top_room_rank = top_room_ids.each_with_index.to_h
+
+    grouped = rooms.group_by { |room| room.source_room || room }
+                   .sort_by { |source, _| top_room_rank[source.id] || Float::INFINITY }
+
+    DigestMailer.weekly(user, grouped).deliver_now
     redirect_to edit_account_url, notice: "Digest preview sent to #{user.email_address}."
   end
 end
