@@ -16,8 +16,8 @@ Rails.application.config.after_initialize do
       AutomatedFeed::ScheduledScanJob.perform_later
     end
 
-    # Weekly email digest - Monday 9 AM Pacific
-    $rufus_scheduler.cron "0 9 * * 1 America/Los_Angeles" do
+    # Weekly email digest - Saturday 7 AM Pacific
+    $rufus_scheduler.cron "0 7 * * 6 America/Los_Angeles" do
       WeeklyDigestJob.new.perform
     end
 

@@ -4,8 +4,6 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <p style="font-family: sans-serif; font-size: 14px; color: #333; padding: 0 16px;">Last week in the Small Bets community:</p>
-
     <% @grouped_rooms.each do |source, rooms| %>
       <% icon = room_icon(source.name) %>
       <table cellpadding="0" cellspacing="0" border="0" width="100%%" style="margin-bottom: 20px;">
@@ -38,11 +36,7 @@
 
     <p style="font-family: sans-serif; font-size: 14px; color: #333; padding: 0 16px;">
       <br/>
-      <small>
-        --
-        <br/>
-        To opt out of these emails, click <%= link_to "here", mailkick_unsubscribe_url(@user, "weekly_digest") %>.
-      </small>
+      Have a great weekend! If you don't want these emails anymore, <%= link_to "opt out", mailkick_unsubscribe_url(@user, "weekly_digest") %>.
     </p>
   </body>
 </html>
