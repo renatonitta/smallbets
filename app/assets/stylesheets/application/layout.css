@@ -40,6 +40,7 @@ body.library-collapsed #sidebar {
   transform: translate(100%);
   visibility: hidden;
   transition: transform 300ms ease, visibility 0ms linear 300ms;
+  will-change: transform;
 
   @media (min-width: 120ch) {
     /* desktop: show a narrower overlay panel aligned to the right */
@@ -135,6 +136,7 @@ body.library-collapsed:has(#sidebar.open) #main-content {
       transform: translate(100%);
       visibility: hidden;
       transition: transform 300ms ease, visibility 0ms linear 300ms;
+      will-change: transform;
     }
   }
 

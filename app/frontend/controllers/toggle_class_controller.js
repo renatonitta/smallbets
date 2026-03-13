@@ -54,6 +54,13 @@ export default class extends Controller {
 
   toggle() {
     this.element.classList.toggle(this.toggleClass)
+
+    // iOS Safari: fixed elements with backdrop-filter may not repaint after
+    // transform changes. Force the browser to recalculate and repaint.
+    this.element.style.webkitTransform = "translate3d(0,0,0)"
+    void this.element.offsetHeight
+    this.element.style.webkitTransform = ""
+
     // When opening, move focus to initial target inside
     if (this.element.classList.contains(this.toggleClass)) {
       if (this.focusTrapValue) this.#focusInitial()
