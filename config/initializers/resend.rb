@@ -18,7 +18,7 @@ class ResendDeliveryMethod
     Resend.api_key = api_key.to_s.strip
     
     params = {
-      from: mail.from.first,
+      from: mail[:from].to_s,
       to: mail.to,
       subject: mail.subject
     }
