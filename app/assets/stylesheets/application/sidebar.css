@@ -147,6 +147,7 @@
     (var(--btn-size) + max(var(--inline-space), 1vw)) * -1
   );
   position: absolute;
+  visibility: visible;
   transition:
     inset-inline-start 300ms ease,
     border-color 300ms ease,
