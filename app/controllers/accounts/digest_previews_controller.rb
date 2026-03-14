@@ -12,10 +12,14 @@ class Accounts::DigestPreviewsController < ApplicationController
       return
     end
 
+<<<<<<< Updated upstream
     cards = HomeFeed::Ranker.top(limit: MAX_TOPICS, since: 1.week.ago)
     room_ids = cards.map(&:room_id)
     rooms = Room.includes(:source_room, :automated_feed_card).where(id: room_ids).index_by(&:id)
                .then { |by_id| room_ids.filter_map { |id| by_id[id] } }
+=======
+    rooms = WeeklyDigestJob.fetch_top_rooms(limit: MAX_TOPICS, since: 1.week.ago)
+>>>>>>> Stashed changes
 
     if rooms.length < MIN_TOPICS
       redirect_to edit_account_url, alert: "Only #{rooms.length} topics found (minimum: #{MIN_TOPICS}). Try a longer time range."

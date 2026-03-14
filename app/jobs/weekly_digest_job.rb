@@ -27,11 +27,15 @@ class WeeklyDigestJob < ApplicationJob
   private
 
   def top_rooms_from_last_week
+    self.class.fetch_top_rooms(limit: MAX_TOPICS, since: @since)
+  end
+
+  def self.fetch_top_rooms(limit:, since:)
     excluded_source_room_ids = Room.where(exclude_from_digest: true).ids
     excluded_room_ids = EmailDigestEntry.previously_sent_room_ids +
       excluded_source_room_ids +
       Room.where(source_room_id: excluded_source_room_ids).ids
-    cards = HomeFeed::Ranker.top(limit: MAX_TOPICS, since: @since, exclude_room_ids: excluded_room_ids)
+    cards = HomeFeed::Ranker.top(limit: limit, since: since, exclude_room_ids: excluded_room_ids)
     room_ids = cards.map(&:room_id)
 
     Room.includes(:source_room, :automated_feed_card).where(id: room_ids).index_by(&:id)
