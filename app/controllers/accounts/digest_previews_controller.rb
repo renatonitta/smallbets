@@ -19,11 +19,7 @@ class Accounts::DigestPreviewsController < ApplicationController
       return
     end
 
-    top_room_ids = Stats::V2::Queries::RoomStatsQuery.new(limit: 100).call.map(&:id)
-    top_room_rank = top_room_ids.each_with_index.to_h
-
-    grouped = rooms.group_by { |room| room.source_room || room }
-                   .sort_by { |source, _| top_room_rank[source.id] || Float::INFINITY }
+    grouped = WeeklyDigestJob.group_by_source_room(rooms)
 
     DigestMailer.weekly(user, grouped).deliver_now
     redirect_to edit_account_url, notice: "Digest preview sent to #{user.email_address}."

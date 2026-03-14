@@ -52,6 +52,10 @@ class WeeklyDigestJob < ApplicationJob
   end
 
   def group_by_source_room(rooms)
+    self.class.group_by_source_room(rooms)
+  end
+
+  def self.group_by_source_room(rooms)
     top_room_ids = Stats::V2::Queries::RoomStatsQuery.new(limit: 100).call.map(&:id)
     top_room_rank = top_room_ids.each_with_index.to_h
 
