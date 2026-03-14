@@ -15,7 +15,7 @@ class DigestMailer < ApplicationMailer
   def room_icon(name)
     return nil if name.blank?
 
-    emoji_pattern = /\A([\p{Emoji_Presentation}\p{Extended_Pictographic}]|[\p{Emoji}]\uFE0F)/
+    emoji_pattern = /\A((?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]|[\p{Emoji}]\uFE0F)(?:\u200D(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]|[\p{Emoji}]\uFE0F?))*)/
     match = name.match(emoji_pattern)
     match ? match[1] : name.strip[0]&.upcase
   end

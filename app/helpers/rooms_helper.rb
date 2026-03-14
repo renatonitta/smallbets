@@ -78,8 +78,8 @@ module RoomsHelper
   def strip_emoji_from_name(room_name)
     return room_name if room_name.blank?
 
-    # Remove emoji from the start of the room name (same pattern as extract_room_icon)
-    emoji_pattern = /\A([\p{Emoji_Presentation}\p{Extended_Pictographic}]|[\p{Emoji}]\uFE0F)\s*/
+    # Remove emoji (including ZWJ sequences) from the start of the room name
+    emoji_pattern = /\A((?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]|[\p{Emoji}]\uFE0F)(?:\u200D(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]|[\p{Emoji}]\uFE0F?))*)\s*/
     
     room_name.gsub(emoji_pattern, "").strip
   end
