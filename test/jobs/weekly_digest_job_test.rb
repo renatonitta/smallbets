@@ -83,6 +83,42 @@ class WeeklyDigestJobTest < ActiveSupport::TestCase
     assert_not_includes room_ids, @rooms.first.id
   end
 
+  test "excludes topic rooms whose source room is marked as exclude_from_digest" do
+    @source_room.update!(exclude_from_digest: true)
+
+    assert_no_emails do
+      WeeklyDigestJob.new.perform
+    end
+
+    assert_equal 0, EmailDigestEntry.count
+  end
+
+  test "excludes only topics from the excluded source room, keeps others" do
+    other_source = rooms(:hq)
+    kept_rooms = 5.times.map do |i|
+      room = Rooms::Open.create!(name: "HQ Topic #{i}", source_room: other_source, creator: @user)
+      FeedCard.create!(room: room, title: "HQ Topic #{i}", summary: "Summary", type: "automated", created_at: 2.days.ago)
+      Message.create!(room: room, creator: @user, body: ActionText::Content.new("Msg #{i}"), created_at: 2.days.ago)
+      room
+    end
+
+    @source_room.update!(exclude_from_digest: true)
+
+    WeeklyDigestJob.new.perform
+
+    digest_room_ids = EmailDigestEntry.where(digest_date: Date.current).pluck(:room_id)
+
+    # All topics from excluded source room should be absent
+    @rooms.each do |room|
+      assert_not_includes digest_room_ids, room.id, "Topic from excluded source room should not be in digest"
+    end
+
+    # All topics from the other source room should be present
+    kept_rooms.each do |room|
+      assert_includes digest_room_ids, room.id, "Topic from non-excluded source room should be in digest"
+    end
+  end
+
   test "does not include topics older than one week" do
     FeedCard.update_all(created_at: 2.weeks.ago)
 
